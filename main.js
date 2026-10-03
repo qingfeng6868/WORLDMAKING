@@ -1,3 +1,4 @@
+import {enhanceModelControls} from './model-controls.js?v=1';
 const dialog=document.querySelector('#content-dialog');
 const labels={tesi:'01 / TESI',progetto:'02 / PROGETTO',modelli:'03 / MODELLI',vr:'04 / ESPERIENZA VR'};
 let lastTrigger,closingAnimation=null;
@@ -14,10 +15,11 @@ dialog.addEventListener('cancel',event=>{event.preventDefault();closeSection();}
 let galleryCleanup=()=>{};
 let chapterCleanup=()=>{};
 let modelCleanup=()=>{},modelTicket=0;
+let modelControlsCleanup=()=>{};
 let experienceCleanup=()=>{};
 document.querySelectorAll('[data-open]').forEach(button=>button.addEventListener('click',()=>{
   closingAnimation?.cancel();closingAnimation=null;dialog.classList.remove('is-closing');
-  chapterCleanup();chapterCleanup=()=>{};
+  chapterCleanup();chapterCleanup=()=>{};modelControlsCleanup();modelControlsCleanup=()=>{};
   lastTrigger=button;
   experienceCleanup();experienceCleanup=()=>{};modelCleanup();modelCleanup=()=>{};const ticket=++modelTicket;
   document.querySelector('#dialog-content').replaceChildren(document.querySelector('#'+button.dataset.open).content.cloneNode(true));
@@ -28,11 +30,14 @@ document.querySelectorAll('[data-open]').forEach(button=>button.addEventListener
   if(button.dataset.open==='vr')import('./video-360.js?v=loading-1').then(({initializeExperience})=>{if(ticket===modelTicket&&dialog.open)experienceCleanup=initializeExperience(document.querySelector('#dialog-content'));}).catch(console.error);
   if(button.dataset.open==='modelli')import('./model-viewer.js').then(async({mountModel})=>{
    if(ticket!==modelTicket)return;const source=document.querySelector('#model-source');let loadVersion=0;
-   async function load(){const version=++loadVersion;modelCleanup();modelCleanup=()=>{};
+   const sourceControlsCleanup=enhanceModelControls(document.querySelector('.model-source-row'));let toolbarControlsCleanup=()=>{};
+   modelControlsCleanup=()=>{sourceControlsCleanup();toolbarControlsCleanup();};
+   async function load(){const version=++loadVersion;toolbarControlsCleanup();toolbarControlsCleanup=()=>{};modelCleanup();modelCleanup=()=>{};
     const model={person:{title:'Figura umana',src:'./models/person.glb'},pavilion:{title:'Padiglione cinese',src:'./models/pavilion.glb'},spaceship:{title:'Nave volante',src:'./models/spaceship.glb',compressed:true,viewAzimuth:-1.8,viewElevation:.85,focusBody:true},pegasus:{title:'Fame Riding Pegasus',src:'./models/pegasus.glb',compressed:true,background:0x292b30,viewAngle:.85},scroll:{title:'Rotolo dipinto',src:'./models/scroll.glb',compressed:true,background:0x292b30}}[source.value];document.querySelector('#model-heading').textContent=model.title;
     const container=document.querySelector('#model-viewer'),host=document.createElement('div');host.className='model-render-host';host.innerHTML='<p class="model-status" role="status">Caricamento del modello…</p>';container.replaceChildren(host);
     document.querySelectorAll('.model-toolbar button,.model-toolbar select').forEach(control=>{const fresh=control.cloneNode(true);fresh.disabled=true;if(fresh.hasAttribute('aria-pressed'))fresh.setAttribute('aria-pressed','false');control.replaceWith(fresh);});
     document.querySelector('#model-style').value='original';document.querySelector('.model-help').textContent='Trascina per ruotare · Rotellina o due dita per lo zoom';
+    toolbarControlsCleanup=enhanceModelControls(document.querySelector('.model-toolbar'));
     const cleanup=await mountModel(host,{src:model.src,compressed:model.compressed,background:model.background,inkLift:model.inkLift,viewAngle:model.viewAngle,viewAzimuth:model.viewAzimuth,viewElevation:model.viewElevation,focusBody:model.focusBody,isActive:()=>ticket===modelTicket&&version===loadVersion});
     if(ticket!==modelTicket||version!==loadVersion)cleanup();else modelCleanup=cleanup;
    }
@@ -43,7 +48,7 @@ document.querySelector('#close-dialog').addEventListener('click',closeSection);
 let backdropPressed=false;
 dialog.addEventListener('pointerdown',event=>{const r=dialog.getBoundingClientRect();backdropPressed=event.target===dialog&&(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom);});
 dialog.addEventListener('click',event=>{if(event.target===dialog&&backdropPressed)closeSection();backdropPressed=false;});
-dialog.addEventListener('close',()=>{chapterCleanup();chapterCleanup=()=>{};closingAnimation?.cancel();closingAnimation=null;dialog.classList.remove('is-closing');experienceCleanup();experienceCleanup=()=>{};modelTicket++;modelCleanup();modelCleanup=()=>{};document.body.classList.remove('modal-open');lastTrigger?.focus();});
+dialog.addEventListener('close',()=>{modelControlsCleanup();modelControlsCleanup=()=>{};chapterCleanup();chapterCleanup=()=>{};closingAnimation?.cancel();closingAnimation=null;dialog.classList.remove('is-closing');experienceCleanup();experienceCleanup=()=>{};modelTicket++;modelCleanup();modelCleanup=()=>{};document.body.classList.remove('modal-open');lastTrigger?.focus();});
 const imageDialog=document.querySelector('#image-dialog');
 let activeGallery=null,activeImage=0,imageTrigger=null;
 function showExpanded(index){
