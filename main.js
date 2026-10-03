@@ -1,7 +1,7 @@
 import {initializeGlassInput} from './glass-input.js?v=1';
 import {enhanceModelControls} from './model-controls.js?v=1';
 const dialog=document.querySelector('#content-dialog');
-const labels={tesi:'01 / TESI',progetto:'02 / PROGETTO',modelli:'03 / MODELLI',vr:'04 / ESPERIENZA VR'};
+const labels={concept:'CONCEPT / IL SITO',tesi:'01 / TESI',progetto:'02 / PROGETTO',modelli:'03 / MODELLI',vr:'04 / ESPERIENZA VR'};
 let lastTrigger,closingAnimation=null;
 function closeSection(){
  if(!dialog.open||closingAnimation)return;

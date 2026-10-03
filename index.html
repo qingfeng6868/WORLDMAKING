@@ -6,7 +6,7 @@
   <title>Worldmaking — Zhang Chenming</title>
   <meta name="description" content="Worldmaking / Creazione d’ambiente. Tesi e progetto di diploma di Zhang Chenming, Accademia di Belle Arti di Roma, 2025–2026.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23090909'/%3E%3Cpath d='M5 9l5 15 6-11 6 11 5-15' fill='none' stroke='%23f3eee8' stroke-width='3'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./style.css?v=mobile-glass-1">
+  <link rel="stylesheet" href="./style.css?v=concept-1">
   <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
 </head>
 <body>
@@ -16,7 +16,7 @@
       <header class="masthead">
         <a class="academy" href="#" aria-label="Torna all’inizio">ACCADEMIA DI BELLE ARTI<br>DI ROMA</a>
         <nav aria-label="Navigazione principale">
-          <button data-open="tesi">Tesi</button><button data-open="progetto">Progetto</button><button data-open="modelli">Modelli</button><button data-open="vr">Esperienza VR</button>
+          <button data-open="concept">Concept</button><button data-open="tesi">Tesi</button><button data-open="progetto">Progetto</button><button data-open="modelli">Modelli</button><button data-open="vr">Esperienza VR</button>
         </nav>
       </header>
       <div class="examination">ESAMI DI DIPLOMA <span>·</span> SESSIONE AUTUNNALE</div>
@@ -46,6 +46,13 @@
     <div class="dialog-top"><span id="dialog-label"></span><button id="close-dialog" aria-label="Chiudi">Chiudi ×</button></div>
     <div class="dialog-content" id="dialog-content"></div>
   </dialog>
+  <template id="concept">
+    <h2 id="dialog-title">Il concept del sito</h2>
+    <p class="full-title">Molti linguaggi, un’esperienza.</p>
+    <p>Ho pensato questo sito come un’introduzione al mio lavoro e come parte della sua presentazione artistica. La multimedialità può assumere molte forme: testo, immagine, suono, video, modellazione 3D e realtà virtuale. Mi interessa esplorare come questi linguaggi possano dialogare tra loro e creare diversi modi di percepire e vivere un’opera.</p>
+    <p>Nella homepage, un cubo trasparente si muove attraverso l’interazione con lo spettatore. Il suo aspetto richiama il ghiaccio e il vetro: riflette, lascia vedere e deforma ciò che si trova dietro. Per me rappresenta la possibilità di trasformare un’immagine attraverso il movimento e il punto di vista.</p>
+    <p>Il percorso parte dalla ricerca teorica, passa attraverso il progetto e i modelli tridimensionali, e arriva all’esperienza immersiva in VR. Vorrei accompagnare lo spettatore dalla lettura e dall’osservazione all’esplorazione dello spazio, invitandolo a partecipare alla costruzione dell’esperienza.</p>
+  </template>
   <template id="tesi">
     <h2 id="dialog-title">La ricerca</h2>
     <p class="full-title">Forme espressive dell’arte multimediale nella comunicazione visiva</p>
@@ -81,5 +88,5 @@
   <template id="modelli"><h2 id="dialog-title">Modelli</h2><div class="model-source-row"><label for="model-source">Modello</label><select id="model-source"><option value="person">Figura umana</option><option value="pavilion">Padiglione cinese</option><option value="scroll">Rotolo dipinto</option><option value="pegasus">Fame Riding Pegasus</option><option value="spaceship">Nave volante</option></select></div><p class="full-title" id="model-heading">Figura umana</p><div class="model-viewer" id="model-viewer" tabindex="0" aria-label="Modello 3D interattivo. Trascina per ruotare e usa la rotellina per avvicinarti."><p class="model-status" role="status">Caricamento del modello…</p></div><div class="model-toolbar"><label>Vista <select id="model-selection" aria-label="Vista del modello completo" disabled></select></label><label>Stile <select id="model-style" aria-label="Stile artistico" disabled><option value="original">Originale</option><option value="sculpture">Scultura</option><option value="chrome">Cromo</option><option value="hologram">Ologramma</option></select></label><button id="model-reset" disabled>Ripristina vista</button><button id="model-wire" aria-pressed="false" disabled>Wireframe</button><button id="model-rotate" aria-pressed="false" disabled>Rotazione automatica</button></div><p class="model-help">Trascina per ruotare · Rotellina o due dita per lo zoom</p></template>
   <template id="vr"><h2 id="dialog-title">Entrare nell’immagine</h2><p class="full-title">Esperienza panoramica a 360°</p><p>Immagini, suono e spazio costruiscono insieme l’esperienza di Worldmaking. Scegli come entrare nell’opera.</p><div class="experience-options"><button class="experience-option" data-experience="video" aria-pressed="false"><span>01 / VIDEO A 360°</span><strong>Guarda il video</strong><small>Esplora il panorama trascinando lo sguardo sullo schermo.</small><b aria-hidden="true">↗</b></button><button class="experience-option" data-experience="exhibition" aria-pressed="false"><span>02 / ALLESTIMENTO</span><strong>Lo spazio espositivo</strong><small>Scopri il progetto dello spazio dedicato all’esperienza di Worldmaking.</small><b aria-hidden="true">↗</b></button><button class="experience-option" data-experience="headset" aria-pressed="false"><span>03 / VISORE VR</span><strong>Indossa il visore VR</strong><small>Vivi l’opera nello spazio immersivo durante la presentazione.</small><b aria-hidden="true">↗</b></button></div><div id="experience-panel" aria-live="polite"></div></template>
   <dialog id="image-dialog" aria-labelledby="image-title"><div class="image-dialog-top"><span id="image-title"></span><button id="image-close" aria-label="Chiudi immagine">Chiudi ×</button></div><div class="image-dialog-view"><button id="image-prev" aria-label="Immagine precedente">‹</button><img id="expanded-image" alt=""><button id="image-next" aria-label="Immagine successiva">›</button></div><p id="image-meta"></p></dialog>
-  <script type="module" src="./main.js?v=mobile-glass-1"></script>
+  <script type="module" src="./main.js?v=concept-1"></script>
 </body></html>
