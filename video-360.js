@@ -1,3 +1,4 @@
+import {makeExperienceImagesOpen} from './lightbox.js?v=1';
 import * as THREE from 'three';
 import Hls from './vendor/hls.mjs';
 
@@ -10,10 +11,12 @@ export function initializeExperience(container){
   choices.forEach(b=>b.setAttribute('aria-pressed',String(b===button)));
   if(button.dataset.experience==='exhibition'){
    panel.innerHTML='<div class="exhibition-design"><span class="section-kicker">02 / ALLESTIMENTO</span><h3>Lo spazio espositivo</h3><p>Un ambiente essenziale accoglie lo spettatore prima dell’ingresso nel mondo virtuale. Lo schermo e le immagini del paesaggio introducono l’opera; le postazioni sedute invitano a esplorarla attraverso il visore.</p><figure><img src="./exhibition/worldmaking-gallery.webp" alt="Proposta di allestimento di Worldmaking: galleria bianca, schermo con l’opera, paesaggio cinese e visitatori illustrati nelle postazioni VR."><figcaption>Proposta di allestimento · Visualizzazione concettuale</figcaption></figure><div class="exhibition-layout"><h3>Pianta e disposizione</h3><p>La proposta considera uno spazio di circa 6 × 5 metri. Le dimensioni sono indicative e da adattare alla sede espositiva.</p><figure><img src="./exhibition/floor-plan.webp" alt="Pianta indicativa del locale, con schermo, paesaggio, preparazione e due postazioni VR."><figcaption>01 / Pianta · Posizioni degli elementi e percorso del visitatore</figcaption></figure><h3>Vista dall’ingresso</h3><figure><img src="./exhibition/entrance-view.webp" alt="Vista realistica dalla porta: banco di preparazione a sinistra, due sedute con tavolini, schermo in fondo e paesaggio sulla parete destra."><figcaption>02 / Vista dall’ingresso · Visualizzazione concettuale</figcaption></figure><h3>La postazione VR</h3><figure><img src="./exhibition/vr-station.webp" alt="Dettaglio della postazione con visitatore illustrato e legenda: visore per smartphone, smartphone, auricolari, seduta e tavolino."><figcaption>03 / Dettaglio · Visore, smartphone, auricolari, seduta e tavolino</figcaption></figure></div><div class="exhibition-notes"><p><b>Accoglienza</b><br>Introduzione all’opera e preparazione del visore.</p><p><b>Immersione</b><br>Due postazioni sedute per esplorare il panorama a 360°.</p><p><b>Paesaggio</b><br>Immagini e luce collegano lo spazio reale all’ambiente poetico.</p></div></div>';
+   makeExperienceImagesOpen(panel);
    return;
   }
   if(button.dataset.experience==='headset'){
    panel.innerHTML='<div class="headset-guide"><span class="section-kicker">ESPERIENZA IMMERSIVA</span><h3>Indossa il visore VR</h3><p>Durante la presentazione, indossa il visore per entrare nel mondo di Worldmaking. Guarda intorno a te: il paesaggio si estende in tutte le direzioni.</p><ol><li>Indossa il visore e regola la messa a fuoco.</li><li>Indossa le cuffie per ascoltare il paesaggio sonoro.</li><li>Rimani seduto e muovi lo sguardo liberamente a 360°.</li></ol><p>L’esperienza nel visore viene avviata durante la presentazione.</p><img class="vr-wearing-guide" src="./exhibition/vr-wearing-guide.png" alt="Tre passaggi illustrati: inserire lo smartphone, indossare e regolare il visore, guardare intorno a sé a 360 gradi."><div class="experience-start-wrap"><button class="experience-start" type="button"><span>Inizia l’esperienza</span><span aria-hidden="true">↗</span></button></div></div>';
+   makeExperienceImagesOpen(panel);
    cleanup=initializePressFeedback(panel.querySelector('.experience-start'));
    return;
   }

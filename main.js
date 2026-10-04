@@ -1,3 +1,4 @@
+import {initializeLightbox} from './lightbox.js?v=1';
 import {initializeGlassInput} from './glass-input.js?v=1';
 import {enhanceModelControls} from './model-controls.js?v=1';
 const dialog=document.querySelector('#content-dialog');
@@ -28,7 +29,7 @@ document.querySelectorAll('[data-open]').forEach(button=>button.addEventListener
   if(button.dataset.open==='tesi')chapterCleanup=initializeThesisChapters();
   document.querySelector('#dialog-label').textContent=labels[button.dataset.open];
   dialog.showModal();dialog.scrollTop=0;document.body.classList.add('modal-open');
-  if(button.dataset.open==='vr')import('./video-360.js?v=loading-1').then(({initializeExperience})=>{if(ticket===modelTicket&&dialog.open)experienceCleanup=initializeExperience(document.querySelector('#dialog-content'));}).catch(console.error);
+  if(button.dataset.open==='vr')import('./video-360.js?v=lightbox-1').then(({initializeExperience})=>{if(ticket===modelTicket&&dialog.open)experienceCleanup=initializeExperience(document.querySelector('#dialog-content'));}).catch(console.error);
   if(button.dataset.open==='modelli')import('./model-viewer.js').then(async({mountModel})=>{
    if(ticket!==modelTicket)return;const source=document.querySelector('#model-source');let loadVersion=0;
    const sourceControlsCleanup=enhanceModelControls(document.querySelector('.model-source-row'));let toolbarControlsCleanup=()=>{};
@@ -50,23 +51,7 @@ let backdropPressed=false;
 dialog.addEventListener('pointerdown',event=>{const r=dialog.getBoundingClientRect();backdropPressed=event.target===dialog&&(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom);});
 dialog.addEventListener('click',event=>{if(event.target===dialog&&backdropPressed)closeSection();backdropPressed=false;});
 dialog.addEventListener('close',()=>{modelControlsCleanup();modelControlsCleanup=()=>{};chapterCleanup();chapterCleanup=()=>{};closingAnimation?.cancel();closingAnimation=null;dialog.classList.remove('is-closing');experienceCleanup();experienceCleanup=()=>{};modelTicket++;modelCleanup();modelCleanup=()=>{};document.body.classList.remove('modal-open');lastTrigger?.focus();});
-const imageDialog=document.querySelector('#image-dialog');
-let activeGallery=null,activeImage=0,imageTrigger=null;
-function showExpanded(index){
-  if(!activeGallery)return;
-  const figures=[...activeGallery.querySelectorAll('.gallery-slide')];activeImage=(index+figures.length)%figures.length;
-  const button=figures[activeImage].querySelector('.image-open'),image=button.querySelector('img');
-  document.querySelector('#expanded-image').src=image.src;document.querySelector('#expanded-image').alt=image.alt;
-  document.querySelector('#image-title').textContent=button.dataset.caption;
-  document.querySelector('#image-meta').textContent=`${String(activeImage+1).padStart(2,'0')} / ${String(figures.length).padStart(2,'0')} · PPT / ${button.dataset.slide.padStart(2,'0')}`;
-  document.querySelector('#image-prev').hidden=figures.length<2;document.querySelector('#image-next').hidden=figures.length<2;
-}
-document.querySelector('#image-close').addEventListener('click',()=>imageDialog.close());
-document.querySelector('#image-prev').addEventListener('click',()=>showExpanded(activeImage-1));
-document.querySelector('#image-next').addEventListener('click',()=>showExpanded(activeImage+1));
-imageDialog.addEventListener('keydown',event=>{if(event.key==='ArrowLeft'){event.preventDefault();showExpanded(activeImage-1);}if(event.key==='ArrowRight'){event.preventDefault();showExpanded(activeImage+1);}});
-imageDialog.addEventListener('click',event=>{if(event.target===imageDialog)imageDialog.close();});
-imageDialog.addEventListener('close',()=>imageTrigger?.focus({preventScroll:true}));
+const openLightbox=initializeLightbox();
 function initializeGalleries(){
   const observers=[];
   document.querySelectorAll('#dialog-content .gallery').forEach(gallery=>{
@@ -82,7 +67,7 @@ function initializeGalleries(){
     track.addEventListener('pointermove',event=>{if(!drag)return;const delta=event.clientX-drag.x;if(Math.abs(delta)>6&&!drag.moved){drag.moved=true;track.setPointerCapture(drag.id);track.classList.add('dragging');}if(drag.moved){event.preventDefault();track.scrollLeft=drag.scroll-delta;}});
     function endDrag(){if(!drag)return;const moved=drag.moved;drag=null;track.classList.remove('dragging');if(moved){suppressClick=true;go(Math.round(track.scrollLeft/Math.max(track.clientWidth,1)));setTimeout(()=>{suppressClick=false;},150);}}
     track.addEventListener('pointerup',endDrag);track.addEventListener('pointercancel',endDrag);track.addEventListener('pointerleave',()=>{if(drag&&!drag.moved)drag=null;});
-    slides.forEach((figure,index)=>figure.querySelector('.image-open').addEventListener('click',event=>{if(suppressClick){event.preventDefault();return;}activeGallery=gallery;imageTrigger=event.currentTarget;showExpanded(index);imageDialog.showModal();}));
+    slides.forEach((figure,index)=>figure.querySelector('.image-open').addEventListener('click',event=>{if(suppressClick){event.preventDefault();return;}openLightbox(slides.map(slide=>slide.querySelector('.image-open')),index);}));
     const observer=new ResizeObserver(()=>{track.scrollTo({left:track.clientWidth*current,behavior:'instant'});update();});observer.observe(track);observers.push(observer);update();
   });
   return()=>observers.forEach(observer=>observer.disconnect());
