@@ -29,7 +29,7 @@ document.querySelectorAll('[data-open]').forEach(button=>button.addEventListener
   if(button.dataset.open==='tesi')chapterCleanup=initializeThesisChapters();
   document.querySelector('#dialog-label').textContent=labels[button.dataset.open];
   dialog.showModal();dialog.scrollTop=0;document.body.classList.add('modal-open');
-  if(button.dataset.open==='vr')import('./video-360.js?v=lightbox-1').then(({initializeExperience})=>{if(ticket===modelTicket&&dialog.open)experienceCleanup=initializeExperience(document.querySelector('#dialog-content'));}).catch(console.error);
+  if(button.dataset.open==='vr')import('./video-360.js?v=mobile-fullscreen-1').then(({initializeExperience})=>{if(ticket===modelTicket&&dialog.open)experienceCleanup=initializeExperience(document.querySelector('#dialog-content'));}).catch(console.error);
   if(button.dataset.open==='modelli')import('./model-viewer.js').then(async({mountModel})=>{
    if(ticket!==modelTicket)return;const source=document.querySelector('#model-source');let loadVersion=0;
    const sourceControlsCleanup=enhanceModelControls(document.querySelector('.model-source-row'));let toolbarControlsCleanup=()=>{};

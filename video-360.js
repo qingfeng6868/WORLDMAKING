@@ -1,3 +1,4 @@
+import {initializePanoramaFullscreen} from './panorama-fullscreen.js?v=1';
 import {makeExperienceImagesOpen} from './lightbox.js?v=1';
 import * as THREE from 'three';
 import Hls from './vendor/hls.mjs';
@@ -46,7 +47,7 @@ function mountPanorama(panel,isActive){
  mute.addEventListener('click',()=>{video.muted=!video.muted;mute.textContent=video.muted?'Audio disattivato':'Audio attivo';mute.setAttribute('aria-pressed',String(video.muted));});
  seek.addEventListener('input',()=>{if(Number.isFinite(video.duration))video.currentTime=Number(seek.value);});
  panel.querySelector('.panorama-reset').addEventListener('click',()=>{dirty=true;longitude=frontLongitude;latitude=0;camera.fov=75;camera.updateProjectionMatrix();});
- panel.querySelector('.panorama-fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await panel.requestFullscreen();}catch{}});
+ const cleanupFullscreen=initializePanoramaFullscreen(panel);
  video.addEventListener('loadedmetadata',()=>{if(!isActive())return;seek.max=video.duration;time.textContent=`0:00 / ${format(video.duration)}`;});
  video.addEventListener('loadeddata',()=>{if(isActive()){status.hidden=true;dirty=true;}});
  video.addEventListener('waiting',()=>{if(isActive()){status.hidden=false;status.textContent='Caricamento del video… Il tempo di caricamento dipende dalla velocità della connessione.';}});
@@ -58,7 +59,7 @@ function mountPanorama(panel,isActive){
  function nextVideoFrame(){if(disposed)return;dirty=true;frameCallback=video.requestVideoFrameCallback(nextVideoFrame);}if(video.requestVideoFrameCallback)frameCallback=video.requestVideoFrameCallback(nextVideoFrame);
  renderer.setAnimationLoop(()=>{if(disposed||!isActive()||document.hidden)return;if(!video.requestVideoFrameCallback&&video.currentTime!==lastVideoTime){dirty=true;lastVideoTime=video.currentTime;}if(!dirty)return;dirty=false;const phi=THREE.MathUtils.degToRad(90-latitude),theta=THREE.MathUtils.degToRad(longitude);camera.lookAt(Math.sin(phi)*Math.cos(theta),Math.cos(phi),Math.sin(phi)*Math.sin(theta));renderer.render(scene,camera);});
  if(video.canPlayType('application/vnd.apple.mpegurl')){video.src=streamUrl;video.load();}else if(Hls.isSupported()){stream=new Hls({maxBufferLength:30,maxMaxBufferLength:60});stream.attachMedia(video);stream.loadSource(streamUrl);}else{status.textContent='Questo browser non supporta il video. Prova con Chrome, Edge o Safari.';}
- return()=>{disposed=true;stream?.destroy();if(frameCallback!==null)video.cancelVideoFrameCallback(frameCallback);video.pause();video.removeAttribute('src');video.load();video.remove();observer.disconnect();renderer.setAnimationLoop(null);texture.dispose();material.dispose();geometry.dispose();renderer.dispose();renderer.forceContextLoss();};
+ return()=>{disposed=true;cleanupFullscreen();stream?.destroy();if(frameCallback!==null)video.cancelVideoFrameCallback(frameCallback);video.pause();video.removeAttribute('src');video.load();video.remove();observer.disconnect();renderer.setAnimationLoop(null);texture.dispose();material.dispose();geometry.dispose();renderer.dispose();renderer.forceContextLoss();};
 }
 
 function initializePressFeedback(button){
